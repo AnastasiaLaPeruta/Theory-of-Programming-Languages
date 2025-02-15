@@ -10,14 +10,14 @@
         01 testString PIC x(99) VALUE "HAL".
         01 Result PIC x(99). 
         01 newString PIC x(99).
-        01 abc PIC x(99) VALUE "ABCDEFGHIJKLMNOPQRSTUVWXYZ".
-        01 cba PIC x(99) VALUE "ZYXWVUTSRQPONMLKJIHGFEDCBA".
+        01 atoz PIC X(26) VALUE "ABCDEFGHIJKLMNOPQRSTUVWXYZ".
+        01 ztoa PIC X(26) VALUE "ZYXWVUTSRQPONMLKJIHGFEDCBA".
         01 stringLength PIC 99.
         01 stringShift PIC 99 VALUE 2.
         01 CharCount PIC 99.
         01 searchChar PIC x(1).
         01 shiftPos PIC 99.
-        01 maxShift PIC 99 VALUE 26.
+        01 maxShift PIC 99 VALUE 27.
         01 adjustedMaxShift PIC 99.
         01 i PIC 99 VALUE 1.
         
@@ -30,9 +30,7 @@
     			COMPUTE stringLength = Length of Result - stringLength.
     			
     			DISPLAY " ".
-    			DISPLAY "Universal Test String: HAL".
-    			DISPLAY "Encrypt and Decrypt shift amount: 2".
-    			DISPLAY "Solve max shift: 26".
+    			DISPLAY "Test String: HAL".
     			DISPLAY " ".
     			DISPLAY "Encrypt".
     			PERFORM Encrypt stringLength TIMES
@@ -43,7 +41,10 @@
     			DISPLAY " ".
     			MOVE maxShift TO adjustedMaxShift.
     			ADD adjustedMaxShift, 1 GIVING adjustedMaxShift
+    			DISPLAY " ".
+    			DISPLAY " ".
     			DISPLAY "Solve".
+    			DISPLAY " ".
     			PERFORM Solve adjustedMaxShift TIMES
     			DISPLAY " ".
     			STOP RUN.
@@ -51,9 +52,9 @@
     	Encrypt.
     			MOVE " " TO searchChar.
     			MOVE Result(i:i) TO searchChar.
-    			MOVE 1 TO CharCount.
+    			MOVE 0 TO CharCount.
     			
-    			INSPECT abc TALLYING CharCount for CHARACTERS
+    			INSPECT atoz TALLYING CharCount for CHARACTERS
     				BEFORE INITIAL searchChar.
     				
     			IF CharCount < 27 
@@ -61,7 +62,7 @@
                         IF shiftPos > 26
                                 COMPUTE shiftPos = shiftPos - 26
                         END-IF
-    					  MOVE abc(shiftPos:1) TO searchChar
+    					  MOVE atoz(shiftPos:1) TO searchChar
 
     			END-IF.
     			MOVE searchChar TO newString(i:i).
@@ -71,9 +72,9 @@
     	Decrypt.
     			MOVE " " TO searchChar.
     			MOVE newString(i:i) TO searchChar.
-    			MOVE 1 TO CharCount.
+    			MOVE 0 TO CharCount.
     			
-    			INSPECT abc TALLYING CharCount for CHARACTERS
+    			INSPECT atoz TALLYING CharCount for CHARACTERS
     				BEFORE INITIAL searchChar.
     				
     			IF CharCount < 27 
@@ -81,7 +82,7 @@
                         IF shiftPos < 1
                                 COMPUTE shiftPos = shiftPos + 26
                         END-IF
-    					    MOVE abc(shiftPos:1) TO searchChar
+    					    MOVE atoz(shiftPos:1) TO searchChar
 
 
     			END-IF.
@@ -91,16 +92,17 @@
     	Solve-Decrypt.
     			MOVE " " TO searchChar.
     			MOVE Result(i:i) TO searchChar.
-    			MOVE 1 TO CharCount.
+    		  MOVE 0 TO CharCount.
+
     			
-    			INSPECT cba TALLYING CharCount for CHARACTERS
+    			INSPECT ztoa TALLYING CharCount for CHARACTERS
     				BEFORE INITIAL searchChar.
     				
     			IF CharCount < 27 
     					ADD maxShift, CharCount GIVING shiftPos
     					IF FUNCTION MOD(shiftPos, 26) IS NOT ZERO 		    				
     							MOVE FUNCTION MOD(shiftPos, 26) to shiftPos
-    							MOVE cba(shiftPos:1) TO searchChar
+    							MOVE ztoa(shiftPos:1) TO searchChar
 
     					ELSE 
     						MOVE "A" TO searchChar
@@ -110,9 +112,9 @@
     			DISPLAY searchChar WITH NO ADVANCING.
     	
     	Solve.
-    			MOVE 1 TO i.
-    			PERFORM Solve-Decrypt stringLength TIMES
-    			SUBTRACT 1 FROM maxShift GIVING maxShift.
-    			DISPLAY " ".
-    			DISPLAY " ".
-    			
+        DISPLAY "Caesar " maxShift ": " WITH NO ADVANCING.
+        MOVE 1 TO i.
+        PERFORM Solve-Decrypt stringLength TIMES
+        SUBTRACT 1 FROM maxShift GIVING maxShift.
+        DISPLAY " ".
+        DISPLAY " ".

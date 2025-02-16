@@ -1,4 +1,4 @@
-        IDENTIFICATION DIVISION.
+IDENTIFICATION DIVISION. 
         PROGRAM-ID. CAESAR-CIPHER.
         
         ENVIRONMENT DIVISION.
@@ -17,9 +17,18 @@
         01 CharCount PIC 99.
         01 searchChar PIC x(1).
         01 shiftPos PIC 99.
-        01 maxShift PIC 99 VALUE 27.
+        01 maxShift PIC 99 VALUE 26.
         01 adjustedMaxShift PIC 99.
         01 i PIC 99 VALUE 1.
+        01 displayShift PIC 99.
+        01 sIndex PIC 99 VALUE 1.
+        01 currentShift PIC S99.
+        01 n PIC 99.
+        01 loopShift PIC S99.
+        01 effectiveShift PIC S99.
+
+
+
         
         PROCEDURE DIVISION.    
                 MOVE FUNCTION UPPER-CASE(testString) TO Result.
@@ -45,7 +54,7 @@
     			DISPLAY " ".
     			DISPLAY "Solve".
     			DISPLAY " ".
-    			PERFORM Solve adjustedMaxShift TIMES
+    			PERFORM Solve
     			DISPLAY " ".
     			STOP RUN.
     	
@@ -54,17 +63,16 @@
     			MOVE Result(i:i) TO searchChar.
     			MOVE 0 TO CharCount.
     			
-    			INSPECT atoz TALLYING CharCount for CHARACTERS
-    				BEFORE INITIAL searchChar.
-    				
-    			IF CharCount < 27 
-    					  COMPUTE shiftPos = (CharCount + 1) + stringShift
-                        IF shiftPos > 26
-                                COMPUTE shiftPos = shiftPos - 26
-                        END-IF
-    					  MOVE atoz(shiftPos:1) TO searchChar
+    			INSPECT atoz TALLYING CharCount FOR CHARACTERS
+          BEFORE INITIAL searchChar.
+          IF CharCount < 27 
+                COMPUTE shiftPos = (CharCount + 1) + stringShift
+                IF shiftPos > 26
+                        COMPUTE shiftPos = shiftPos - 26
+                END-IF
+                MOVE atoz(shiftPos:1) TO searchChar
+          END-IF.
 
-    			END-IF.
     			MOVE searchChar TO newString(i:i).
     			ADD i, 1 GIVING i.
     			DISPLAY searchChar WITH NO ADVANCING.
@@ -89,32 +97,50 @@
     			ADD i, 1 GIVING i.
     			DISPLAY searchChar WITH NO ADVANCING.
     			
-    	Solve-Decrypt.
-    			MOVE " " TO searchChar.
-    			MOVE Result(i:i) TO searchChar.
-    		  MOVE 0 TO CharCount.
-
     			
-    			INSPECT ztoa TALLYING CharCount for CHARACTERS
-    				BEFORE INITIAL searchChar.
-    				
-    			IF CharCount < 27 
-    					ADD maxShift, CharCount GIVING shiftPos
-    					IF FUNCTION MOD(shiftPos, 26) IS NOT ZERO 		    				
-    							MOVE FUNCTION MOD(shiftPos, 26) to shiftPos
-    							MOVE ztoa(shiftPos:1) TO searchChar
+    			
+    			
+    	Solve-Decrypt.
 
-    					ELSE 
-    						MOVE "A" TO searchChar
-    					END-IF
-    			END-IF.
-    			ADD i, 1 GIVING i.
-    			DISPLAY searchChar WITH NO ADVANCING.
+      MOVE FUNCTION UPPER-CASE(Result(sIndex:1)) TO searchChar.
+
+      MOVE 0 TO CharCount.
+      PERFORM VARYING n FROM 1 BY 1 UNTIL n > 26 OR CharCount > 0
+           IF atoz(n:1) = searchChar
+              MOVE n TO CharCount
+           END-IF
+      END-PERFORM.
+      IF CharCount > 0 
+   
+            COMPUTE shiftPos = CharCount + (currentShift - 26)
+            IF shiftPos < 1
+                  COMPUTE shiftPos = shiftPos + 26
+            ELSE
+                  IF shiftPos > 26
+                        COMPUTE shiftPos = shiftPos - 26
+                  END-IF
+            END-IF
+            MOVE atoz(shiftPos:1) TO searchChar
+      END-IF.
+      DISPLAY searchChar WITH NO ADVANCING.
+
+
+
+
+
+
+
+
     	
-    	Solve.
-        DISPLAY "Caesar " maxShift ": " WITH NO ADVANCING.
-        MOVE 1 TO i.
-        PERFORM Solve-Decrypt stringLength TIMES
-        SUBTRACT 1 FROM maxShift GIVING maxShift.
-        DISPLAY " ".
-        DISPLAY " ".
+   Solve.
+      PERFORM VARYING loopShift FROM 26 BY -1 UNTIL loopShift < 0
+           MOVE loopShift TO currentShift
+           COMPUTE displayShift = currentShift
+           DISPLAY "Caesar " displayShift ": " WITH NO ADVANCING
+           MOVE 1 TO sIndex
+           PERFORM Solve-Decrypt VARYING sIndex FROM 1 BY 1 UNTIL sIndex > stringLength
+           DISPLAY " "
+      END-PERFORM.
+
+
+

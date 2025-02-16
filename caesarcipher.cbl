@@ -26,6 +26,9 @@ IDENTIFICATION DIVISION.
         01 n PIC 99.
         01 loopShift PIC S99.
         01 effectiveShift PIC S99.
+        01 oldPos       PIC 99.
+        01 newPos       PIC 99.
+        01 newPosForZ   PIC 99.
 
 
 
@@ -101,26 +104,13 @@ IDENTIFICATION DIVISION.
     			
     			
     	Solve-Decrypt.
-
       MOVE FUNCTION UPPER-CASE(Result(sIndex:1)) TO searchChar.
-
       MOVE 0 TO CharCount.
-      PERFORM VARYING n FROM 1 BY 1 UNTIL n > 26 OR CharCount > 0
-           IF atoz(n:1) = searchChar
-              MOVE n TO CharCount
-           END-IF
-      END-PERFORM.
-      IF CharCount > 0 
-   
-            COMPUTE shiftPos = CharCount + (currentShift - 26)
-            IF shiftPos < 1
-                  COMPUTE shiftPos = shiftPos + 26
-            ELSE
-                  IF shiftPos > 26
-                        COMPUTE shiftPos = shiftPos - 26
-                  END-IF
-            END-IF
-            MOVE atoz(shiftPos:1) TO searchChar
+      INSPECT atoz TALLYING CharCount FOR CHARACTERS BEFORE INITIAL searchChar.
+      IF CharCount >= 0
+           COMPUTE oldPos = CharCount + 1
+           COMPUTE shiftPos = FUNCTION MOD((oldPos - 1) + (currentShift - 26), 26) + 1
+           MOVE atoz(shiftPos:1) TO searchChar
       END-IF.
       DISPLAY searchChar WITH NO ADVANCING.
 
@@ -130,9 +120,7 @@ IDENTIFICATION DIVISION.
 
 
 
-
-    	
-   Solve.
+    Solve.
       PERFORM VARYING loopShift FROM 26 BY -1 UNTIL loopShift < 0
            MOVE loopShift TO currentShift
            COMPUTE displayShift = currentShift

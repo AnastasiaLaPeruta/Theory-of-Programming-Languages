@@ -1,4 +1,8 @@
 FUNCTION encrypt (str AS STRING, shiftAmount AS INTEGER, encryptedStr AS STRING) AS STRING
+    searchChar = " "
+    searchChar
+    
+    
     effectiveShift = shiftAmount MOD 26
     FOR i AS INTEGER = 1 TO LEN(str)
         ' syntax assisted by ChatGPT 

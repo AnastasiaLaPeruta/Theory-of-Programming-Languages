@@ -2,17 +2,14 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build FreeBASIC",
+            "label": "Build and Run",
             "type": "shell",
-            "command": "fbc",
-            "args": [
-                "main.bas"
-            ],
+            "command": "fbc caesarcipher.bas && caesarcipher.exe",
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": "$gcc"
+            "problemMatcher": []
         }
     ]
 }

@@ -1,5 +1,5 @@
-' caesarcipher.bas
-' A Caesar cipher encryption/decryption program in FreeBASIC
+' fbc_caesarcipher.bas
+' A Caesar cipher encryption/decryption program in FreeBASIC, ChatGPT assisted in debugging 
 
 #include "crt.bi"  ' For Sleep (pause) at the end
 
@@ -7,7 +7,6 @@
 Dim Shared testString As String    ' Original input string
 Dim Shared procString As String    ' Processed (uppercase, trimmed) input
 Dim Shared atoz As String          ' Alphabet string
-Dim Shared ztoa As String          ' Reverse alphabet string (unused in encryption)
 Dim Shared stringShift As Integer  ' Shift for encryption
 Dim Shared maxShift As Integer     ' Maximum label value for solving
 
@@ -15,7 +14,6 @@ Dim Shared maxShift As Integer     ' Maximum label value for solving
 Sub InitializeGlobals()
     testString   = "HAL"                             ' Original input
     atoz         = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"       ' Alphabet string
-    ztoa         = "ZYXWVUTSRQPONMLKJIHGFEDCBA"        ' Reverse alphabet string
     stringShift  = 2                                 ' Shift for encryption
     maxShift     = 26                                ' We'll label our shifts from 26 down to 0
 End Sub
@@ -26,19 +24,19 @@ End Sub
 ' Encrypts a string using a Caesar cipher.
 ' Parameters:
 '   s     - the input string (assumed uppercase)
-'   shift - the shift amount (e.g. 2)
+'   shift - the shift amount (2)
 ' Returns:
 '   The encrypted string.
 '----------------------------------------------------------
 Function Encrypt(s As String, shift As Integer) As String
     Dim result As String = ""
     Dim i As Integer
-    Dim charPos As Integer  ' renamed from pos to avoid conflicts
+    Dim charPos As Integer  
     Dim index As Integer
     Dim ch As String
     For i = 1 To Len(s)
         ch = Mid(s, i, 1)
-        ch = UCase$(ch)
+        ch = UCase(ch)
         charPos = Instr(1, atoz, ch)  ' returns 0 if not found
         If charPos <> 0 Then
             index = charPos + shift
@@ -106,8 +104,8 @@ End Sub
 Sub Main()
     Dim encrypted As String, decrypted As String
 
-    procString = UCase$(testString)
-    procString = Trim$(procString)
+    procString = UCase(testString)
+    procString = Trim(procString)
     Print "Test String: "; testString
     encrypted = Encrypt(procString, stringShift)
     Print "Encrypted: "; encrypted

@@ -6,7 +6,7 @@ IDENTIFICATION DIVISION.
         DATA DIVISION.
         
         WORKING-STORAGE SECTION.
-        01 testString PIC x(99) VALUE "HAL".
+        01 testString PIC x(99) VALUE "PACK MY BOX WITH FIVE DOZEN LIQUOR JUGS".
         01 Result PIC x(99). 
         01 newString PIC x(99).
         01 atoz PIC X(26) VALUE "ABCDEFGHIJKLMNOPQRSTUVWXYZ".
@@ -64,7 +64,7 @@ IDENTIFICATION DIVISION.
     			
     			INSPECT atoz TALLYING CharCount FOR CHARACTERS
           BEFORE INITIAL searchChar.
-          IF CharCount < 27 
+              IF searchChar NOT = " " AND CharCount < 27 
                 COMPUTE shiftPos = (CharCount + 1) + stringShift
                 IF shiftPos > 26
                         COMPUTE shiftPos = shiftPos - 26
@@ -85,7 +85,8 @@ IDENTIFICATION DIVISION.
     			INSPECT atoz TALLYING CharCount for CHARACTERS
     				BEFORE INITIAL searchChar.
     				
-    			IF CharCount < 27 
+    			    IF searchChar NOT = " " AND CharCount < 27 
+
     					    COMPUTE shiftPos = (CharCount + 1) - stringShift
                         IF shiftPos < 1
                                 COMPUTE shiftPos = shiftPos + 26
@@ -101,15 +102,20 @@ IDENTIFICATION DIVISION.
     			
     			
     	Solve-Decrypt.
-      MOVE FUNCTION UPPER-CASE(Result(sIndex:1)) TO searchChar.
-      MOVE 0 TO CharCount.
-      INSPECT atoz TALLYING CharCount FOR CHARACTERS BEFORE INITIAL searchChar.
-      IF CharCount >= 0
-           COMPUTE oldPos = CharCount + 1
-           COMPUTE shiftPos = FUNCTION MOD((oldPos - 1) + (currentShift - 26), 26) + 1
-           MOVE atoz(shiftPos:1) TO searchChar
-      END-IF.
-      DISPLAY searchChar WITH NO ADVANCING.
+    MOVE FUNCTION UPPER-CASE(Result(sIndex:1)) TO searchChar
+    IF searchChar = " " THEN
+         DISPLAY " " WITH NO ADVANCING
+    ELSE
+         MOVE 0 TO CharCount
+         INSPECT atoz TALLYING CharCount FOR CHARACTERS BEFORE INITIAL searchChar
+         IF CharCount >= 0 THEN
+              COMPUTE oldPos = CharCount + 1
+              COMPUTE shiftPos = FUNCTION MOD((oldPos - 1) + (currentShift - 26), 26) + 1
+              MOVE atoz(shiftPos:1) TO searchChar
+         END-IF
+         DISPLAY searchChar WITH NO ADVANCING
+    END-IF.
+
 
 
 

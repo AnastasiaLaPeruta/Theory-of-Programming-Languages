@@ -28,20 +28,16 @@ begin
       ch := UpperCase(ch);
       charPos := Pos(ch, atoz);
       if charPos = 0 then
-        index := charPos + shift;
-        if index > 26 then
-          index := index - 26
-          (*extracts char from string; shown command copy by ChatGPT*)
-          result := result + Copy(atoz, index, 1);
-        Else
-          result := result + ch;
-         
-
-
-
+         index := charPos + shift;
+         if index > 26 then
+            index := index - 26
+            (*extracts char from string; shown command copy by ChatGPT*)
+            result := result + Copy(atoz, index, 1)
+         else
+            result := result + ch;
+      i = i + 1;
+      return result;
     end;
-
-
 end;
 
 

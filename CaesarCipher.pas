@@ -48,10 +48,26 @@ function decrypt(s: string; shift: integer): string;
 
 var
    (* local variable declaration *)
-   example: integer;
+   result: string;
+   i: integer;
+   charPos: integer;
+   index: integer;
+   ch: string;
 
 begin
-
+   for i := 1 to length(s) do
+   begin
+      ch := copy(s, i, 1);
+      charPos := Pos(ch, atoz);
+      if charPos = 0 then
+         index := charPos - shift;
+         if index < 1 then
+            index := index + 26
+            result := result + copy(atoz, index, 1);
+         else
+            result := result + ch;
+         i = i + 1;
+         return result;    
 end;
 
 
@@ -59,8 +75,19 @@ end;
 
 (*solve is a procedure because it does not return a value directly*)
 procedure solve(s: string; maxLabel: integer);
-begin
 
+var
+   (* local variable declaration *)
+   L, currentShift: integer;
+
+
+begin
+   (* ChatGPT helped translate these lines from my BASIC program*)
+   for L := maxLabel downto 0 do
+   begin
+      currentShift := (stringShift + (26 - L)) mod 26;
+      writeln('Caesar ", L, ": ", decrypt(s, currentShift));
+   L := L + 1;
 end;
 
 
@@ -68,5 +95,19 @@ end;
 
 (*main program block where calls functions*)
 begin
-  writeln ('Hello, World!')
+  encrypted, decrypted: string;
+
+  (* makes sure string is capitalized and has no white space attached on ends*)
+  procString := UpperCase(testString);
+  procString := Trim(procString);
+  writeln('Test String: ', testString);
+  encrypted := encrypt(procString, stringShift);
+  writeln('Encrypted: ', encrypted);
+  decrypted := decrypt(encrypted, stringShift);
+  writeln('Decrypted: ', decrypted);
+  writeln;
+  writeln('Trying all shifts:');
+  solve(encrypted, maxShift);
+  writeln;
+
 end.

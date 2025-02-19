@@ -2,33 +2,36 @@ object CaesarCipher {
 
     // Global variables (accessible throughout the program)
     var testString: String = "HAL"
-    var procString: String
+    var procString: String = ""
     var atoz: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     var stringShift: Int = 2
     var maxShift: Int = 26
-    encrypted: String
-    decrypted: String
+    var encrypted: String = ""
+    var decrypted: String = ""
 
 
 
     // Function with return value
     def encrypt(s: String, shift: Int): String = {
-        val result: String = ""
-        val i: Int
+        var result: String = ""
+        var i: Int = 0
 
-        for (i <- 1 until s.length){
-            val ch: String = s.substring(i, i + 1)
+        for (i <- 0 until s.length){
+            var ch: String = s.substring(i, i + 1)
             ch = ch.toUpperCase
             val charPos: Int = atoz.indexOf(ch) + 1  // Convert 0-based to 1-based index, ChatGPT translation of line from Pascal
             // indexOf returns -1 if char not found
-            if (charPos != -1) then
-                val index: Int = charPos + shift
-                if index > 26 then
+            if (charPos != -1) {
+                var index: Int = charPos + shift
+                if (index > 26) {
                     index = index - 26
-                    // extracts char from string
-                    result = result + atoz.substring(index, index + 1)
-                else
+                }
+                // extracts char from string
+                result = result + atoz.substring(index, index + 1)
+                else {
                     result = result + ch
+                }
+            }
         }
         return result
     }
@@ -37,33 +40,35 @@ object CaesarCipher {
 
     // Function with return value
     def decrypt(s: String, shift: Int): String = {
-        val result: String = ""
-        val i: Int
+        var result: String = ""
+        var i: Int = 0
 
 
-        for (i <- 1 until s.length){
-            val ch: String = s.substring(i, i + 1)
+        for (i <- 0 until s.length){
+            var ch: String = s.substring(i, i + 1)
             val charPos: Int = atoz.indexOf(ch) + 1  // Convert 0-based to 1-based index, ChatGPT translation of line from Pascal
             // indexOf returns -1 if char not found
-            if (charPos != -1) then
-                val index: Int = charPos - shift
-                if index < 1 then
+            if (charPos != -1) {
+                var index: Int = charPos - shift
+                if (index < 1) {
                     index = index + 26
-                    // extracts char from string
-                    result = result + atoz.substring(index, index + 1)
-                else
+                }
+                // extracts char from string
+                result = result + atoz.substring(index, index + 1)
+                else {
                     result = result + ch
-        }
-        return result
+                }
+            }
+            return result
         }
     }
 
 
     // Function without return value (procedure)
     def solve(s: String, maxLabel: Int): Unit = {
-        val L: Int
+        var L: Int = 0
         for (L <- maxLabel to 0 by -1){ // by -1 suggested by ChatGPT
-            val currentShift = (stringShift + (26 - L)) % 26
+            var currentShift = (stringShift + (26 - L)) % 26
             println("Caesar: " + L + ": " + decrypt(s, currentShift))
         }   
     }

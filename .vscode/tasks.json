@@ -1,15 +1,18 @@
+
 {
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build and Run",
+            "label": "Run SML",
             "type": "shell",
-            "command": "fbc caesarcipher.bas && caesarcipher.exe",
-            "group": {
-                "kind": "build",
-                "isDefault": true
+            "command": "C:\\Program Files (x86)\\SMLNJ\\bin\\sml.bat",
+            "args": ["${file}"],
+            "group": "build",
+            "presentation": {
+                "reveal": "always"
             },
             "problemMatcher": []
         }
     ]
 }
+
